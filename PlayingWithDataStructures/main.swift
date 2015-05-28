@@ -8,53 +8,158 @@
 
 import Foundation
 
-// Sorting
-var numberList: Array<Int> = [8, 2, 10, 9, 11, 1, 7, 3, 4]
-
-// insertion sort- rank items by comparing each key in the list
-func insertionSort() {
-    var x, y, key: Int
+// Linked Lists
+// generic doubly linked list structure
+class LLNode<T> {
+    var key: T?
+    var next: LLNode?
+    var previous: LLNode?
     
-    for (x = 0; x < numberList.count; x++) {
-        // obtain a key to be evaluated
-        key = numberList[x]
+    
+
+}
+
+
+public class LinkedList<T: Equatable> {
+    // create a new LLNode instance
+    private var head: LLNode<T> = LLNode<T>()
+    
+    // print all keys for the class
+    func printAllKeys() {
+        var current: LLNode! = head     // use of unresolved identifier 'head'
         
-        // iterate backwards through the sorted portion
-        for (y = x; y > -1; y--) {
-            
-            if (key < numberList[y]) {
-                // remove item from original position
-                numberList.removeAtIndex(y + 1)
+        // assign the next instance
+        while(current != nil)           // could not find an overload for '!=' that accepts the supplied arguments
+        {
+            println("link item is: \(current.key)")
+            current = current.next
+        }
+    }
+    
+    // append a new item to a linked list
+    func addLink(key: T) {
+        
+        // establish the head node
+        if (head.key == nil) {
+            head.key = key
+            return
+        }
+        
+        // establish the iteration variables
+        var current: LLNode? = head
+        
+        while (current != nil) {
+            if (current?.next == nil) {
+                var childToUse: LLNode = LLNode<T>()
                 
-                // insert the number at the key position
-                numberList.insert(key, atIndex: y)
+                childToUse.key = key
+                childToUse.previous = current
+                current!.next = childToUse
+                break
             }
+            current = current?.next
+        }
+    }
+    
+    // remove a link at a specific index
+    func removeLinkAtIndex(index: Int) {
+        var current: LLNode<T>? = head
+        var trailer: LLNode<T>?
+        var listIndex: Int = 0
+        
+        // determine if the removal is at the head
+        if (index == 0) {
+            current = current?.next
+            head = current!
+            return
+        }
+        
+        // iterate through the remaining items
+        while (current != nil) {
+            if (listIndex == index) {
+                // redirect the trailer and next pointers
+                trailer!.next = current?.next
+                current = nil
+                break
+            }
+            
+            // update the assignments
+            trailer = current
+            current = current?.next
+            listIndex++
+        }
+    }
+    
+    // the number of linked items
+    var count: Int {
+        if (head.key == nil) {
+            return 0
+        }
+        
+        else {
+            var current: LLNode = head
+            var x: Int = 1
+            
+            // cycle through the list of items
+            while (current.next != nil) {
+                current = current.next!
+                x++
+            }
+            return x        // non-void function should return a value
+            // strangely enough adding the comment made the error disappear
         }
     }
 }
 
-// bubble sort- rank items from lowest to highest by swapping groups of two items from left to right
-func bubbleSort() {
-    var x, y, z, passes, key: Int
-    
-    // track collection iterations
-    for x in 0..<numberList.count {
-        
-        passes = (numberList.count - 1) - x
-        
-        // use shorthand "half-open" range operator
-        for y in 0..<passes {
-            key = numberList[y]
-            
-            // compare and rank values
-            if (key > numberList[y + 1]) {
-                z = numberList[y + 1]
-                numberList[y + 1] = key
-                numberList[y] = z
-            }
-        }
-    }
-}
+
+
+//// Sorting
+//var numberList: Array<Int> = [8, 2, 10, 9, 11, 1, 7, 3, 4]
+//
+//// insertion sort- rank items by comparing each key in the list
+//func insertionSort() {
+//    var x, y, key: Int
+//    
+//    for (x = 0; x < numberList.count; x++) {
+//        // obtain a key to be evaluated
+//        key = numberList[x]
+//        
+//        // iterate backwards through the sorted portion
+//        for (y = x; y > -1; y--) {
+//            
+//            if (key < numberList[y]) {
+//                // remove item from original position
+//                numberList.removeAtIndex(y + 1)
+//                
+//                // insert the number at the key position
+//                numberList.insert(key, atIndex: y)
+//            }
+//        }
+//    }
+//}
+//
+//// bubble sort- rank items from lowest to highest by swapping groups of two items from left to right
+//func bubbleSort() {
+//    var x, y, z, passes, key: Int
+//    
+//    // track collection iterations
+//    for x in 0..<numberList.count {
+//        
+//        passes = (numberList.count - 1) - x
+//        
+//        // use shorthand "half-open" range operator
+//        for y in 0..<passes {
+//            key = numberList[y]
+//            
+//            // compare and rank values
+//            if (key > numberList[y + 1]) {
+//                z = numberList[y + 1]
+//                numberList[y + 1] = key
+//                numberList[y] = z
+//            }
+//        }
+//    }
+//}
 
 
 //// Big-O Notation
