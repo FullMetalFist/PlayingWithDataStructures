@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>C75D27CB-2CAB-442A-B1F3-E23D73BDAC8E</string>
+	<key>IDESourceControlProjectName</key>
+	<string>PlayingWithDataStructures</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>D575D6D9D7E588BB54AA8AADEA102DF92CDEA7DF</key>
+		<string>github.com:FullMetalFist/PlayingWithDataStructures.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>PlayingWithDataStructures.xcodeproj</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>D575D6D9D7E588BB54AA8AADEA102DF92CDEA7DF</key>
+		<string>../..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>github.com:FullMetalFist/PlayingWithDataStructures.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>D575D6D9D7E588BB54AA8AADEA102DF92CDEA7DF</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>D575D6D9D7E588BB54AA8AADEA102DF92CDEA7DF</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PlayingWithDataStructures</string>
+		</dict>
+	</array>
+</dict>
+</plist>

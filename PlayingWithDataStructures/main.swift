@@ -8,110 +8,162 @@
 
 import Foundation
 
-// Linked Lists
-// generic doubly linked list structure
-class LLNode<T> {
+// binary search trees
+// generic binary search tree
+public class AVLTree<T: Comparable> {
     var key: T?
-    var next: LLNode?
-    var previous: LLNode?
+    var left: AVLTree?
+    var right: AVLTree?
     
+    // a simple array of unsorted integers
+    let numberList: Array<Int> = [8, 2, 10, 9, 11, 1, 7]
     
-
-}
-
-
-public class LinkedList<T: Equatable> {
-    // create a new LLNode instance
-    private var head: LLNode<T> = LLNode<T>()
+    // create a new BST instance
+    var root = AVLTree<Int>()
     
-    // print all keys for the class
-    func printAllKeys() {
-        var current: LLNode! = head     // use of unresolved identifier 'head'
-        
-        // assign the next instance
-        while(current != nil)           // could not find an overload for '!=' that accepts the supplied arguments
-        {
-            println("link item is: \(current.key)")
-            current = current.next
-        }
-    }
+//    // sort each item in the list
+//    for (number in numberList) {        // expected declaration
+//        root.addNode(number)
+//    }
     
-    // append a new item to a linked list
-    func addLink(key: T) {
-        
-        // establish the head node
-        if (head.key == nil) {
-            head.key = key
+    // add item based on its value
+    func addNode(key: T) {
+        // check for the head node
+        if (self.key == nil) {
+            self.key = key
             return
         }
         
-        // establish the iteration variables
-        var current: LLNode? = head
-        
-        while (current != nil) {
-            if (current?.next == nil) {
-                var childToUse: LLNode = LLNode<T>()
-                
-                childToUse.key = key
-                childToUse.previous = current
-                current!.next = childToUse
-                break
+        // check the left side of the tree
+        if (key < self.key) {
+            if (self.left != nil) {
+                left!.addNode(key)
             }
-            current = current?.next
+            else {
+                // create a new left node
+                var leftChild: AVLTree = AVLTree()
+                leftChild.key = key
+                self.left = leftChild
+            }
+        }
+        
+        // check the right side of the tree
+        if (key > self.key) {
+            if (self.right != nil) {
+                right!.addNode(key)
+            }
+            else {
+                // create a new right node
+                var rightChild: AVLTree = AVLTree()
+                rightChild.key = key
+                self.right = rightChild
+            }
         }
     }
     
-    // remove a link at a specific index
-    func removeLinkAtIndex(index: Int) {
-        var current: LLNode<T>? = head
-        var trailer: LLNode<T>?
-        var listIndex: Int = 0
+    init() {
         
-        // determine if the removal is at the head
-        if (index == 0) {
-            current = current?.next
-            head = current!
-            return
-        }
-        
-        // iterate through the remaining items
-        while (current != nil) {
-            if (listIndex == index) {
-                // redirect the trailer and next pointers
-                trailer!.next = current?.next
-                current = nil
-                break
-            }
-            
-            // update the assignments
-            trailer = current
-            current = current?.next
-            listIndex++
-        }
-    }
-    
-    // the number of linked items
-    var count: Int {
-        if (head.key == nil) {
-            return 0
-        }
-        
-        else {
-            var current: LLNode = head
-            var x: Int = 1
-            
-            // cycle through the list of items
-            while (current.next != nil) {
-                current = current.next!
-                x++
-            }
-            return x        // non-void function should return a value
-            // strangely enough adding the comment made the error disappear
-        }
     }
 }
 
-
+//// Linked Lists
+//// generic doubly linked list structure
+//class LLNode<T> {
+//    var key: T?
+//    var next: LLNode?
+//    var previous: LLNode?
+//}
+//
+//public class LinkedList<T: Equatable> {
+//    // create a new LLNode instance
+//    private var head: LLNode<T> = LLNode<T>()
+//    
+//    // print all keys for the class
+//    func printAllKeys() {
+//        var current: LLNode! = head     // use of unresolved identifier 'head'
+//        
+//        // assign the next instance
+//        while(current != nil)           // could not find an overload for '!=' that accepts the supplied arguments
+//        {
+//            println("link item is: \(current.key)")
+//            current = current.next
+//        }
+//    }
+//    
+//    // append a new item to a linked list
+//    func addLink(key: T) {
+//        
+//        // establish the head node
+//        if (head.key == nil) {
+//            head.key = key
+//            return
+//        }
+//        
+//        // establish the iteration variables
+//        var current: LLNode? = head
+//        
+//        while (current != nil) {
+//            if (current?.next == nil) {
+//                var childToUse: LLNode = LLNode<T>()
+//                
+//                childToUse.key = key
+//                childToUse.previous = current
+//                current!.next = childToUse
+//                break
+//            }
+//            current = current?.next
+//        }
+//    }
+//    
+//    // remove a link at a specific index
+//    func removeLinkAtIndex(index: Int) {
+//        var current: LLNode<T>? = head
+//        var trailer: LLNode<T>?
+//        var listIndex: Int = 0
+//        
+//        // determine if the removal is at the head
+//        if (index == 0) {
+//            current = current?.next
+//            head = current!
+//            return
+//        }
+//        
+//        // iterate through the remaining items
+//        while (current != nil) {
+//            if (listIndex == index) {
+//                // redirect the trailer and next pointers
+//                trailer!.next = current?.next
+//                current = nil
+//                break
+//            }
+//            
+//            // update the assignments
+//            trailer = current
+//            current = current?.next
+//            listIndex++
+//        }
+//    }
+//    
+//    // the number of linked items
+//    var count: Int {
+//        if (head.key == nil) {
+//            return 0
+//        }
+//        
+//        else {
+//            var current: LLNode = head
+//            var x: Int = 1
+//            
+//            // cycle through the list of items
+//            while (current.next != nil) {
+//                current = current.next!
+//                x++
+//            }
+//            return x        // non-void function should return a value
+//            // strangely enough adding the comment made the error disappear
+//        }
+//    }
+//}
 
 //// Sorting
 //var numberList: Array<Int> = [8, 2, 10, 9, 11, 1, 7, 3, 4]
@@ -161,7 +213,6 @@ public class LinkedList<T: Equatable> {
 //    }
 //}
 
-
 //// Big-O Notation
 //let numberList: Array<Int> = [1,2,3,4,5,6,7,8,9,10]
 //
@@ -195,4 +246,3 @@ public class LinkedList<T: Equatable> {
 //        let results = "value \(key) found"
 //    }
 //}
-
