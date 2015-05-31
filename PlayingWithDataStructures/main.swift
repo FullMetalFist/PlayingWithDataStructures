@@ -64,6 +64,21 @@ public class AVLTree<T: Comparable> {
     init() {
         
     }
+    
+    // tree balancing
+    // a simple array of unsorted integers
+    let balanceList: Array<Int> = [29, 26, 23]
+    
+    // retreive the height of a node
+    func getNodeHeight(aNode: AVLTree!) -> Int {
+        if (aNode == nil) {
+            return -1
+        }
+        else {
+//            return aNode
+            //
+        }
+    }
 }
 
 //// Linked Lists
