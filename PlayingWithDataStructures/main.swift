@@ -14,6 +14,7 @@ public class AVLTree<T: Comparable> {
     var key: T?
     var left: AVLTree?
     var right: AVLTree?
+    var height: Int
     
     // a simple array of unsorted integers
     let numberList: Array<Int> = [8, 2, 10, 9, 11, 1, 7]
@@ -31,6 +32,7 @@ public class AVLTree<T: Comparable> {
         // check for the head node
         if (self.key == nil) {
             self.key = key
+            self.height = 0
             return
         }
         
@@ -43,8 +45,16 @@ public class AVLTree<T: Comparable> {
                 // create a new left node
                 var leftChild: AVLTree = AVLTree()
                 leftChild.key = key
-                self.left = leftChild
+                leftChild.height = 0
+                self.left = leftChild               // cannot assign a value of type '()' to a value of type int
             }
+            
+            // recalculate node height for hierarchy
+            self.setNodeHeight()
+            println("traversing left side node \(self.key!) with height \(self.height)")
+            
+            // check AVL property
+            self.isValidTree()
         }
         
         // check the right side of the tree
@@ -62,7 +72,8 @@ public class AVLTree<T: Comparable> {
     }
     
     init() {
-        
+        // set for math purposes
+        self.height = -1
     }
     
     // tree balancing
