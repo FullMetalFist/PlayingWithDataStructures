@@ -8,215 +8,283 @@
 
 import Foundation
 
-// binary search trees
-// generic binary search tree
-public class AVLTree<T: Comparable> {
-    var key: T?
-    var left: AVLTree?
-    var right: AVLTree?
-    var height: Int
-    
-    // a simple array of unsorted integers
-    let numberList: Array<Int> = [8, 2, 10, 9, 11, 1, 7]
-    
-    // create a new BST instance
-    var root = AVLTree<Int>()
+// extension String
+extension String {
+    var length: Int { return count(self) }
+}
+
+// trie
+// generic trie data structure
+public class TrieNode {
+    var key: String!
+    var children: Array<TrieNode>
+    var isFinal: Bool
+    var level: Int
     
     init() {
-        // set for math purposes
-        self.height = -1
+        self.children = Array<TrieNode>()
+        self.isFinal = false
+        self.level = 0
     }
-    
-    // add item based on its value
-    func addNode(key: T) {
-        // check for the head node
-        if (self.key == nil) {
-            self.key = key
-            self.height = 0
-            return
-        }
-        
-        // check the left side of the tree
-        if (key < self.key) {
-            
-            if (self.left != nil) {
-                left!.addNode(key)
-            }
-            else {
-                // create a new left node
-                var leftChild: AVLTree = AVLTree()
-                leftChild.key = key
-                leftChild.height = 0
-                self.left = leftChild               // cannot assign a value of type '()' to a value of type int
-            }
-            
-            // recalculate node height for hierarchy
-            self.setNodeHeight()
-            println("traversing left side. node \(self.key!) with height \(self.height)")
-            
-            // check AVL property
-            self.isValidAVLTree()
-        }
-        
-        // check the right side of the tree
-        if (key > self.key) {
-            
-            if (self.right != nil) {
-                right?.addNode(key)
-            }
-            else {
-                // create a new right node
-                var rightChild: AVLTree = AVLTree()
-                rightChild.key = key
-                rightChild.height = 0
-                self.right = rightChild     // cannot assign a value of type '()' to a value type of 'Int'
-            }
-            
-            // recalculate node height for hierarchy
-            self.setNodeHeight()
-            println("traversing right side. node \(self.key!) with height: \(self.height)")
-            
-            // check AVL property
-            self.isValidAVLTree()
-        }
-        
-    } // end function
-    
-    // retreive the height of a node
-    func getNodeHeight(aNode: AVLTree!) -> Int {
-        if (aNode == nil) {
-            return -1
-        }
-        else {
-            return aNode.height
-        }
-    }
-    
-    // calculate the height of a node
-    func setNodeHeight() -> Bool {
-        // check for a nil condition
-        if (self.key == nil) {
-            println("no key provided")
-            return false
-        }
-        
-        //println("key: \(self.key!)")
-        
-        // initialize leaf variables
-        var nodeHeight: Int = 0
-        
-        // do comparison and calculate node height
-        nodeHeight = max(getNodeHeight(self.left), getNodeHeight(self.right)) + 1
-        
-        self.height = nodeHeight
-        
-        return true
-    }
-    
-    // determine if the tree is "balanced" - operations on a balanced tree is O(log n)
-    func isTreeBalanced() -> Bool {
-        
-        // check for a nil condition
-        if (self.key == nil) {
-            println("no key provided...")
-            return false
-        }
-        
-        // use absolute value to manage right and left imbalances
-        if (abs(getNodeHeight(self.left) - getNodeHeight(self.right)) <= 1) {
-            return true
-        }
-        else {
-            return false
-        }
-    } // end function
-    
-    // check to ensure node meeds AVL property
-    func isValidAVLTree() -> Bool! {
-        
-        // check for valid scenario
-        if (self.key == nil) {
-            println("no key provided..")
-            return false
-        }
-        
-        if (self.isTreeBalanced() == true) {
-            println("node \(self.key!) already balanced..")
-            return true
-        }
-        
-        // determine rotation type
-        else {
-            
-            // create a new leaf node
-            var childToUse: AVLTree = AVLTree()
-            childToUse.height = 0
-            childToUse.key = self.key
-            
-            if (getNodeHeight(self.left) - getNodeHeight(self.right) > 1) {
-                println("n starting right rotation on \(self.key!)..")
-                
-                // reset the root node
-                self.key = self.left?.key
-                self.height = getNodeHeight(self.left)
-                
-                // assign the new right node
-                self.right = childToUse
-                
-                // adjust the left node
-                self.left = self.left?.left
-                self.left?.height = 0
-                
-                println("root is: \(self.key!) | left is: \(self.left!.key) | right is: \(self.right!.key)")
-                
-                return true
-            }
-            
-            if (getNodeHeight(self.right) - getNodeHeight(self.left) > 1) {
-                println("\n starting left rotation on \(self.key!)..")
-                
-                // reset the root node
-                self.key = self.right?.key
-                self.height = getNodeHeight(self.right)
-                
-                // assign the new left node
-                self.left = childToUse
-                
-                // adjust the right node
-                self.right = self.right?.right
-                self.right?.height = 0
-                
-                println("root is: \(self.key!) | left is: \(self.left!.key) | right is: \(self.right!.key)")
-                
-                return true
-            }
-            
-            return nil
-        }
-    } // end function
-    
-    // depth first search in-order traversal
-    func processAVLDepthTraversal() {
-        
-        // check for a nil condition
-        if (self.key == nil) {
-            println("no key provided")
-            return
-        }
-        
-        // process left side
-        if (self.left != nil) {
-            left?.processAVLDepthTraversal()
-        }
-        
-        println("..the traversed value is: \(self.key!). height: \(self.height)..")
-        
-        // process the right side
-        if (self.right != nil) {
-            right?.processAVLDepthTraversal()
-        }
-    } // end function
 }
+
+// generic trie implementation
+public class Trie {
+    private var root: TrieNode!
+    
+    init() {
+        root = TrieNode()
+    }
+    
+    // builds a recursive tree of dictionary content
+    func addWord(keyword: String) {
+        if (keyword.length == 0) {
+            return;
+        }
+        var current: TrieNode = root
+        var searchKey: String!
+        
+        while(keyword.length != current.level) {
+            var childToUse: TrieNode!
+            var searchKey = keyword.substringToIndex(current.level + 1)     // cannot invoke 'substringToIndex' with an argument list of type '(Int)'
+            
+            // iterate through the node children
+            for child in current.children {
+                if (child.key == searchKey) {
+                    childToUse = child
+                    break
+                }
+            }
+            
+            // create a new node
+            if (childToUse == nil) {
+                childToUse = TrieNode()
+                childToUse.key = searchKey
+                childToUse.level = current.level + 1
+                current.children.append(childToUse)
+            }
+            
+            current = childToUse
+        }
+        
+        // add final end of word check
+        if (keyword.length == current.level) {
+            current.isFinal = true
+            println("end of word reached!")
+            return
+        }
+    }
+}
+
+//// binary search tree rotations
+//// generic binary search tree
+//public class AVLTree<T: Comparable> {
+//    var key: T?
+//    var left: AVLTree?
+//    var right: AVLTree?
+//    var height: Int
+//    
+//    // a simple array of unsorted integers
+//    let numberList: Array<Int> = [8, 2, 10, 9, 11, 1, 7]
+//    
+//    // create a new BST instance
+//    var root = AVLTree<Int>()
+//    
+//    init() {
+//        // set for math purposes
+//        self.height = -1
+//    }
+//    
+//    // add item based on its value
+//    func addNode(key: T) {
+//        // check for the head node
+//        if (self.key == nil) {
+//            self.key = key
+//            self.height = 0
+//            return
+//        }
+//        
+//        // check the left side of the tree
+//        if (key < self.key) {
+//            
+//            if (self.left != nil) {
+//                left!.addNode(key)
+//            }
+//            else {
+//                // create a new left node
+//                var leftChild: AVLTree = AVLTree()
+//                leftChild.key = key
+//                leftChild.height = 0
+//                self.left = leftChild               // cannot assign a value of type '()' to a value of type int
+//            }
+//            
+//            // recalculate node height for hierarchy
+//            self.setNodeHeight()
+//            println("traversing left side. node \(self.key!) with height \(self.height)")
+//            
+//            // check AVL property
+//            self.isValidAVLTree()
+//        }
+//        
+//        // check the right side of the tree
+//        if (key > self.key) {
+//            
+//            if (self.right != nil) {
+//                right?.addNode(key)
+//            }
+//            else {
+//                // create a new right node
+//                var rightChild: AVLTree = AVLTree()
+//                rightChild.key = key
+//                rightChild.height = 0
+//                self.right = rightChild     // cannot assign a value of type '()' to a value type of 'Int'
+//            }
+//            
+//            // recalculate node height for hierarchy
+//            self.setNodeHeight()
+//            println("traversing right side. node \(self.key!) with height: \(self.height)")
+//            
+//            // check AVL property
+//            self.isValidAVLTree()
+//        }
+//        
+//    } // end function
+//    
+//    // retreive the height of a node
+//    func getNodeHeight(aNode: AVLTree!) -> Int {
+//        if (aNode == nil) {
+//            return -1
+//        }
+//        else {
+//            return aNode.height
+//        }
+//    }
+//    
+//    // calculate the height of a node
+//    func setNodeHeight() -> Bool {
+//        // check for a nil condition
+//        if (self.key == nil) {
+//            println("no key provided")
+//            return false
+//        }
+//        
+//        //println("key: \(self.key!)")
+//        
+//        // initialize leaf variables
+//        var nodeHeight: Int = 0
+//        
+//        // do comparison and calculate node height
+//        nodeHeight = max(getNodeHeight(self.left), getNodeHeight(self.right)) + 1
+//        
+//        self.height = nodeHeight
+//        
+//        return true
+//    }
+//    
+//    // determine if the tree is "balanced" - operations on a balanced tree is O(log n)
+//    func isTreeBalanced() -> Bool {
+//        
+//        // check for a nil condition
+//        if (self.key == nil) {
+//            println("no key provided...")
+//            return false
+//        }
+//        
+//        // use absolute value to manage right and left imbalances
+//        if (abs(getNodeHeight(self.left) - getNodeHeight(self.right)) <= 1) {
+//            return true
+//        }
+//        else {
+//            return false
+//        }
+//    } // end function
+//    
+//    // check to ensure node meeds AVL property
+//    func isValidAVLTree() -> Bool! {
+//        
+//        // check for valid scenario
+//        if (self.key == nil) {
+//            println("no key provided..")
+//            return false
+//        }
+//        
+//        if (self.isTreeBalanced() == true) {
+//            println("node \(self.key!) already balanced..")
+//            return true
+//        }
+//        
+//        // determine rotation type
+//        else {
+//            
+//            // create a new leaf node
+//            var childToUse: AVLTree = AVLTree()
+//            childToUse.height = 0
+//            childToUse.key = self.key
+//            
+//            if (getNodeHeight(self.left) - getNodeHeight(self.right) > 1) {
+//                println("n starting right rotation on \(self.key!)..")
+//                
+//                // reset the root node
+//                self.key = self.left?.key
+//                self.height = getNodeHeight(self.left)
+//                
+//                // assign the new right node
+//                self.right = childToUse
+//                
+//                // adjust the left node
+//                self.left = self.left?.left
+//                self.left?.height = 0
+//                
+//                println("root is: \(self.key!) | left is: \(self.left!.key) | right is: \(self.right!.key)")
+//                
+//                return true
+//            }
+//            
+//            if (getNodeHeight(self.right) - getNodeHeight(self.left) > 1) {
+//                println("\n starting left rotation on \(self.key!)..")
+//                
+//                // reset the root node
+//                self.key = self.right?.key
+//                self.height = getNodeHeight(self.right)
+//                
+//                // assign the new left node
+//                self.left = childToUse
+//                
+//                // adjust the right node
+//                self.right = self.right?.right
+//                self.right?.height = 0
+//                
+//                println("root is: \(self.key!) | left is: \(self.left!.key) | right is: \(self.right!.key)")
+//                
+//                return true
+//            }
+//            
+//            return nil
+//        }
+//    } // end function
+//    
+//    // depth first search in-order traversal
+//    func processAVLDepthTraversal() {
+//        
+//        // check for a nil condition
+//        if (self.key == nil) {
+//            println("no key provided")
+//            return
+//        }
+//        
+//        // process left side
+//        if (self.left != nil) {
+//            left?.processAVLDepthTraversal()
+//        }
+//        
+//        println("..the traversed value is: \(self.key!). height: \(self.height)..")
+//        
+//        // process the right side
+//        if (self.right != nil) {
+//            right?.processAVLDepthTraversal()
+//        }
+//    } // end function
+//}
 
 //// Linked Lists
 //// generic doubly linked list structure
