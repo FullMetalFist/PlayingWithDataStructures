@@ -74,6 +74,64 @@ public class Trie {
             return
         }
     }
+    
+    // find all words based on a prefix
+    func findWord(keyword: String) -> Array<String>! {
+        if (keyword.length == 0) {
+            return nil
+        }
+        
+        var current: TrieNode = root
+        var searchKey: String!
+        var wordList: Array<String>! = Array<String>()
+        
+        while(keyword.length != current.level) {
+            var childToUse: TrieNode!
+            var searchKey = keyword.substringToIndex(current.level + 1)
+            
+            
+            // iterate through any children
+            for child in current.children {
+                if (child.key == searchKey) {
+                    childToUse = child
+                    current = childToUse
+                    break
+                }
+            }
+            
+            // prefix not found
+            if (childToUse == nil) {
+                return nil
+            }
+        }
+        
+        // retrieve keyword and any decendants
+        if ((current.key == keyword) && (current.isFinal)) {
+            wordList.append(current.key)
+        }
+        
+        // add children that are words
+        for child in current.children {
+            if (child.isFinal == true) {
+                wordList.append(child.key)
+            }
+        }
+        
+        return wordList
+    }
+}
+
+// extend the native String class
+extension String {
+    // compute the length of string
+    var length: Int {       // invalid redeclaration of 'length'
+        return Array(self).count
+    }
+    
+    // returns characters of a string up to a specified index
+    func substringToIndex(to: Int) -> String {
+        return self.substringToIndex(advance(self.startIndex, to))
+    }
 }
 
 //// binary search tree rotations
