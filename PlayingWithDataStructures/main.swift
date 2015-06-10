@@ -8,11 +8,6 @@
 
 import Foundation
 
-// extension String
-extension String {
-    var length: Int { return count(self) }
-}
-
 // trie
 // generic trie data structure
 public class TrieNode {
