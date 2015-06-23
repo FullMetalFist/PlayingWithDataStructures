@@ -8,126 +8,205 @@
 
 import Foundation
 
-// trie
-// generic trie data structure
-public class TrieNode {
-    var key: String!
-    var children: Array<TrieNode>
-    var isFinal: Bool
-    var level: Int
-    
-    init() {
-        self.children = Array<TrieNode>()
-        self.isFinal = false
-        self.level = 0
-    }
+// stacks & queues
+// generic queue data object
+class QNode<T> {
+    var key: T?
+    var next: QNode?
 }
 
-// generic trie implementation
-public class Trie {
-    private var root: TrieNode!
+public class Queue<T> {
+    private var top: QNode<T>! = QNode<T>()
     
-    init() {
-        root = TrieNode()
-    }
-    
-    // builds a recursive tree of dictionary content
-    func addWord(keyword: String) {
-        if (keyword.length == 0) {
-            return;
-        }
-        var current: TrieNode = root
-        var searchKey: String!
+    // enqueue the specified object
+    func enQueue(var key:T) {
         
-        while(keyword.length != current.level) {
-            var childToUse: TrieNode!
-            var searchKey = keyword.substringToIndex(current.level + 1)     // cannot invoke 'substringToIndex' with an argument list of type '(Int)'
-            
-            // iterate through the node children
-            for child in current.children {
-                if (child.key == searchKey) {
-                    childToUse = child
-                    break
-                }
-            }
-            
-            // create a new node
-            if (childToUse == nil) {
-                childToUse = TrieNode()
-                childToUse.key = searchKey
-                childToUse.level = current.level + 1
-                current.children.append(childToUse)
-            }
-            
-            current = childToUse
+        // check for the instance
+        if (top == nil) {
+            top = QNode<T>()
         }
         
-        // add final end of word check
-        if (keyword.length == current.level) {
-            current.isFinal = true
-            println("end of word reached!")
+        // establish the top node
+        if (top.key == nil) {
+            top.key = key;
             return
         }
+        
+        var childToUse: QNode<T> = QNode<T>()
+        var current: QNode = top
+        
+        // cycle through the list of items to get to the end
+        while (current.next != nil) {
+            current = current.next!
+        }
+        
+        // append a new item
+        childToUse.key = key
+        current.next = childToUse
     }
     
-    // find all words based on a prefix
-    func findWord(keyword: String) -> Array<String>! {
-        if (keyword.length == 0) {
+    // retrieve items from the top level in 0(1) constant time
+    func deQueue() -> T? {
+        
+        // determine if the key or instance exists
+        let topItem: T? = self.top?.key
+        
+        if (topItem == nil) {
             return nil
         }
         
-        var current: TrieNode = root
-        var searchKey: String!
-        var wordList: Array<String>! = Array<String>()
+        // retrieve and queue the next item
+        var queueItem: T? = top.key!
         
-        while(keyword.length != current.level) {
-            var childToUse: TrieNode!
-            var searchKey = keyword.substringToIndex(current.level + 1)
-            
-            
-            // iterate through any children
-            for child in current.children {
-                if (child.key == searchKey) {
-                    childToUse = child
-                    current = childToUse
-                    break
-                }
-            }
-            
-            // prefix not found
-            if (childToUse == nil) {
-                return nil
-            }
+        // use optional binding
+        if let nextItem = top.next {
+            top = nextItem
+        }
+        else {
+            top = nil
         }
         
-        // retrieve keyword and any decendants
-        if ((current.key == keyword) && (current.isFinal)) {
-            wordList.append(current.key)
-        }
+        return queueItem
+    }
+    
+    // check for the presence of a value
+    func isEmpty() -> Bool {
         
-        // add children that are words
-        for child in current.children {
-            if (child.isFinal == true) {
-                wordList.append(child.key)
-            }
+        // determine if the key or instance exists
+        if let topItem: T = self.top?.key {
+            return false
         }
-        
-        return wordList
+        else {
+            return true
+        }
+    }
+    
+    // retrieve the topmost item
+    func peek() -> T? {
+        return top.key!
     }
 }
 
-// extend the native String class
-extension String {
-    // compute the length of string
-    var length: Int {       // invalid redeclaration of 'length'
-        return Array(self).count
-    }
-    
-    // returns characters of a string up to a specified index
-    func substringToIndex(to: Int) -> String {
-        return self.substringToIndex(advance(self.startIndex, to))
-    }
-}
+//// trie
+//// generic trie data structure
+//public class TrieNode {
+//    var key: String!
+//    var children: Array<TrieNode>
+//    var isFinal: Bool
+//    var level: Int
+//    
+//    init() {
+//        self.children = Array<TrieNode>()
+//        self.isFinal = false
+//        self.level = 0
+//    }
+//}
+//
+//// generic trie implementation
+//public class Trie {
+//    private var root: TrieNode!
+//    
+//    init() {
+//        root = TrieNode()
+//    }
+//    
+//    // builds a recursive tree of dictionary content
+//    func addWord(keyword: String) {
+//        if (keyword.length == 0) {
+//            return;
+//        }
+//        var current: TrieNode = root
+//        var searchKey: String!
+//        
+//        while(keyword.length != current.level) {
+//            var childToUse: TrieNode!
+//            var searchKey = keyword.substringToIndex(current.level + 1)     // cannot invoke 'substringToIndex' with an argument list of type '(Int)'
+//            
+//            // iterate through the node children
+//            for child in current.children {
+//                if (child.key == searchKey) {
+//                    childToUse = child
+//                    break
+//                }
+//            }
+//            
+//            // create a new node
+//            if (childToUse == nil) {
+//                childToUse = TrieNode()
+//                childToUse.key = searchKey
+//                childToUse.level = current.level + 1
+//                current.children.append(childToUse)
+//            }
+//            
+//            current = childToUse
+//        }
+//        
+//        // add final end of word check
+//        if (keyword.length == current.level) {
+//            current.isFinal = true
+//            println("end of word reached!")
+//            return
+//        }
+//    }
+//    
+//    // find all words based on a prefix
+//    func findWord(keyword: String) -> Array<String>! {
+//        if (keyword.length == 0) {
+//            return nil
+//        }
+//        
+//        var current: TrieNode = root
+//        var searchKey: String!
+//        var wordList: Array<String>! = Array<String>()
+//        
+//        while(keyword.length != current.level) {
+//            var childToUse: TrieNode!
+//            var searchKey = keyword.substringToIndex(current.level + 1)
+//            
+//            
+//            // iterate through any children
+//            for child in current.children {
+//                if (child.key == searchKey) {
+//                    childToUse = child
+//                    current = childToUse
+//                    break
+//                }
+//            }
+//            
+//            // prefix not found
+//            if (childToUse == nil) {
+//                return nil
+//            }
+//        }
+//        
+//        // retrieve keyword and any decendants
+//        if ((current.key == keyword) && (current.isFinal)) {
+//            wordList.append(current.key)
+//        }
+//        
+//        // add children that are words
+//        for child in current.children {
+//            if (child.isFinal == true) {
+//                wordList.append(child.key)
+//            }
+//        }
+//        
+//        return wordList
+//    }
+//}
+//
+//// extend the native String class
+//extension String {
+//    // compute the length of string
+//    var length: Int {       // invalid redeclaration of 'length'
+//        return Array(self).count
+//    }
+//    
+//    // returns characters of a string up to a specified index
+//    func substringToIndex(to: Int) -> String {
+//        return self.substringToIndex(advance(self.startIndex, to))
+//    }
+//}
 
 //// binary search tree rotations
 //// generic binary search tree
