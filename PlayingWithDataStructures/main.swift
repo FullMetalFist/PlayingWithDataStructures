@@ -8,84 +8,86 @@
 
 import Foundation
 
-// stacks & queues
-// generic queue data object
-class QNode<T> {
-    var key: T?
-    var next: QNode?
-}
 
-public class Queue<T> {
-    private var top: QNode<T>! = QNode<T>()
-    
-    // enqueue the specified object
-    func enQueue(var key:T) {
-        
-        // check for the instance
-        if (top == nil) {
-            top = QNode<T>()
-        }
-        
-        // establish the top node
-        if (top.key == nil) {
-            top.key = key;
-            return
-        }
-        
-        var childToUse: QNode<T> = QNode<T>()
-        var current: QNode = top
-        
-        // cycle through the list of items to get to the end
-        while (current.next != nil) {
-            current = current.next!
-        }
-        
-        // append a new item
-        childToUse.key = key
-        current.next = childToUse
-    }
-    
-    // retrieve items from the top level in 0(1) constant time
-    func deQueue() -> T? {
-        
-        // determine if the key or instance exists
-        let topItem: T? = self.top?.key
-        
-        if (topItem == nil) {
-            return nil
-        }
-        
-        // retrieve and queue the next item
-        var queueItem: T? = top.key!
-        
-        // use optional binding
-        if let nextItem = top.next {
-            top = nextItem
-        }
-        else {
-            top = nil
-        }
-        
-        return queueItem
-    }
-    
-    // check for the presence of a value
-    func isEmpty() -> Bool {
-        
-        // determine if the key or instance exists
-        if let topItem: T = self.top?.key {
-            return false
-        }
-        else {
-            return true
-        }
-    }
-    
-    // retrieve the topmost item
-    func peek() -> T? {
-        return top.key!
-    }
-}
+
+//// stacks & queues
+//// generic queue data object
+//class QNode<T> {
+//    var key: T?
+//    var next: QNode?
+//}
+//
+//public class Queue<T> {
+//    private var top: QNode<T>! = QNode<T>()
+//    
+//    // enqueue the specified object
+//    func enQueue(var key:T) {
+//        
+//        // check for the instance
+//        if (top == nil) {
+//            top = QNode<T>()
+//        }
+//        
+//        // establish the top node
+//        if (top.key == nil) {
+//            top.key = key;
+//            return
+//        }
+//        
+//        var childToUse: QNode<T> = QNode<T>()
+//        var current: QNode = top
+//        
+//        // cycle through the list of items to get to the end
+//        while (current.next != nil) {
+//            current = current.next!
+//        }
+//        
+//        // append a new item
+//        childToUse.key = key
+//        current.next = childToUse
+//    }
+//    
+//    // retrieve items from the top level in 0(1) constant time
+//    func deQueue() -> T? {
+//        
+//        // determine if the key or instance exists
+//        let topItem: T? = self.top?.key
+//        
+//        if (topItem == nil) {
+//            return nil
+//        }
+//        
+//        // retrieve and queue the next item
+//        var queueItem: T? = top.key!
+//        
+//        // use optional binding
+//        if let nextItem = top.next {
+//            top = nextItem
+//        }
+//        else {
+//            top = nil
+//        }
+//        
+//        return queueItem
+//    }
+//    
+//    // check for the presence of a value
+//    func isEmpty() -> Bool {
+//        
+//        // determine if the key or instance exists
+//        if let topItem: T = self.top?.key {
+//            return false
+//        }
+//        else {
+//            return true
+//        }
+//    }
+//    
+//    // retrieve the topmost item
+//    func peek() -> T? {
+//        return top.key!
+//    }
+//}
 
 //// trie
 //// generic trie data structure
