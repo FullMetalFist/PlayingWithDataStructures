@@ -8,7 +8,74 @@
 
 import Foundation
 
+// a vertex data structure
+public class Vertex {
+    var key: String?
+    var neighbors: Array<Edge>
+    
+    init() {
+        self.neighbors = Array<Edge>()
+    }
+}
 
+// an edge data structure
+public class Edge {
+    var neighbor: Vertex
+    var weight: Int
+    
+    init() {
+        weight = 0
+        self.neighbor = Vertex()
+    }
+}
+
+// a default directed graph canvas
+public class SwiftGraph {
+    private var canvas: Array<Vertex>
+    public var isDirected: Bool
+    
+    init () {
+        canvas = Array<Vertex>()
+        isDirected = true
+    }
+    
+    // create a new vertex
+    func addVertex(key: String) -> Vertex {
+        
+        // set the key
+        var childVertex: Vertex = Vertex()
+        childVertex.key = key
+        
+        // add the vertex to the graph canvas
+        canvas.append(childVertex)
+        
+        return childVertex
+    }
+    
+    // add an edge to source vertex
+    func addEdge(source: Vertex, neighbor: Vertex, weight: Int) {
+        
+        // create a new edge
+        var newEdge = Edge()
+        
+        // establish the default properties
+        newEdge.neighbor = neighbor
+        newEdge.weight = weight
+        source.neighbors.append(newEdge)
+        
+        // check for undirected graph
+        if (isDirected == false) {
+            
+            // create a new reversed edge
+            var reversedEdge = Edge()
+            
+            // establish the reversed properties
+            reversedEdge.neighbor = source
+            reversedEdge.weight = weight
+            neighbor.neighbors.append(reversedEdge)
+        }
+    }
+}
 
 //// stacks & queues
 //// generic queue data object
