@@ -8,11 +8,23 @@
 
 import Foundation
 
-// a vertex data structure
+// shortest paths
+// maintain objects that make the "frontier"
+class Path {
+    var total: Int!
+    var destination: Vertex
+    var previous: Path!
+    
+    // object initialization
+    init() {
+        destination = Vertex()
+    }
+}
+
 public class Vertex {
     var key: String?
     var neighbors: Array<Edge>
-    
+
     init() {
         self.neighbors = Array<Edge>()
     }
@@ -22,60 +34,151 @@ public class Vertex {
 public class Edge {
     var neighbor: Vertex
     var weight: Int
-    
+
     init() {
         weight = 0
         self.neighbor = Vertex()
     }
 }
 
-// a default directed graph canvas
-public class SwiftGraph {
-    private var canvas: Array<Vertex>
-    public var isDirected: Bool
+// process Dijkstra's shortest path algorithm
+func processDijkstra(source: Vertex, destination: Vertex) -> Path? {
+    var frontier: Array = Array()
+    var finalPaths: Array = Array()
     
-    init () {
-        canvas = Array<Vertex>()
-        isDirected = true
+    // use source edges to create the frontier
+    for e in source.neighbors {
+        var newPath: Path = Path()
+        
+        newPath.destination = e.neighbor
+        newPath.previous = nil
+        newPath.total = e.weight
+        
+        // add the new path to the frontier
+        frontier.append(newPath)
     }
     
-    // create a new vertex
-    func addVertex(key: String) -> Vertex {
+    // obtain the best path
+    var bestPath: Path = Path()
+    while(frontier.count != 0) {
+        // support path changes using the greedy approach
+        bestPath = Path()
         
-        // set the key
-        var childVertex: Vertex = Vertex()
-        childVertex.key = key
+        var x: Int = 0
+        var pathIndex: Int = 0
         
-        // add the vertex to the graph canvas
-        canvas.append(childVertex)
+        for(x = 0; x < frontier.count; x++) {
+            var itemPath: Path = frontier[x]
+            
+            if (bestPath.total == nil) || (itemPath.total < bestPath.total) {
+                bestPath = itemPath
+                pathIndex = x
+            }
+        }
+        // enumerate the bestPath edges
+        for e in bestPath.destination.neighbors {
+            var newPath: Path = Path()
+            
+            newPath.destination = e.neighbor
+            newPath.previous = bestPath
+            newPath.total = bestPath.total + e.weight
+            
+            // add the new path to the frontier
+            frontier.append(newPath)
+        }
         
-        return childVertex
+        // preserve the bestPath
+        finalPaths.append(bestPath)
+        
+        // remove bestPath from the frontier
+        frontier.removeAtIndex(pathIndex)
     }
     
-    // add an edge to source vertex
-    func addEdge(source: Vertex, neighbor: Vertex, weight: Int) {
-        
-        // create a new edge
-        var newEdge = Edge()
-        
-        // establish the default properties
-        newEdge.neighbor = neighbor
-        newEdge.weight = weight
-        source.neighbors.append(newEdge)
-        
-        // check for undirected graph
-        if (isDirected == false) {
+    // establish the shortestPath as an optional
+    var shortestPath: Path! = Path()
+    
+    for itemPath in finalPaths {
+        if (itemPath.destination.key == destination.key) {
             
-            // create a new reversed edge
-            var reversedEdge = Edge()
-            
-            // establish the reversed properties
-            reversedEdge.neighbor = source
-            reversedEdge.weight = weight
-            neighbor.neighbors.append(reversedEdge)
+            if(shortestPath.total == nil) || (itemPath.total < shortestPath.total) {
+                shortestPath = itemPath
+            }
         }
     }
+    
+    return shortestPath
 }
+
+//// a vertex data structure
+//public class Vertex {
+//    var key: String?
+//    var neighbors: Array<Edge>
+//    
+//    init() {
+//        self.neighbors = Array<Edge>()
+//    }
+//}
+//
+//// an edge data structure
+//public class Edge {
+//    var neighbor: Vertex
+//    var weight: Int
+//    
+//    init() {
+//        weight = 0
+//        self.neighbor = Vertex()
+//    }
+//}
+//
+//// a default directed graph canvas
+//public class SwiftGraph {
+//    private var canvas: Array<Vertex>
+//    public var isDirected: Bool
+//    
+//    init () {
+//        canvas = Array<Vertex>()
+//        isDirected = true
+//    }
+//    
+//    // create a new vertex
+//    func addVertex(key: String) -> Vertex {
+//        
+//        // set the key
+//        var childVertex: Vertex = Vertex()
+//        childVertex.key = key
+//        
+//        // add the vertex to the graph canvas
+//        canvas.append(childVertex)
+//        
+//        return childVertex
+//    }
+//    
+//    // add an edge to source vertex
+//    func addEdge(source: Vertex, neighbor: Vertex, weight: Int) {
+//        
+//        // create a new edge
+//        var newEdge = Edge()
+//        
+//        // establish the default properties
+//        newEdge.neighbor = neighbor
+//        newEdge.weight = weight
+//        source.neighbors.append(newEdge)
+//        
+//        // check for undirected graph
+//        if (isDirected == false) {
+//            
+//            // create a new reversed edge
+//            var reversedEdge = Edge()
+//            
+//            // establish the reversed properties
+//            reversedEdge.neighbor = source
+//            reversedEdge.weight = weight
+//            neighbor.neighbors.append(reversedEdge)
+//        }
+//    }
+//}
+
+
 
 //// stacks & queues
 //// generic queue data object
