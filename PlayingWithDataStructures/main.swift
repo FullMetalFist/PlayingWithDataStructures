@@ -8,13 +8,74 @@
 
 import Foundation
 
-// shortest paths
-// maintain objects that make the "frontier"
+// heaps
+// obtain the best path
+// a basic min-heap data structure
+public class PathHeap {
+    
+    private var heap: Array<Path>
+    
+    // the number of frontier items
+    var count: Int {
+        return self.heap.count
+    }
+    
+    init() {
+        heap = Array<Path>()
+    }
+    
+    // obtain the minimum path
+    func peek() -> Path! {
+        if (heap.count > 0) {
+            return heap[0]  // shortest path
+        }
+        else {
+            return nil
+        }
+    }
+    
+    // remove the minimum path
+    func enQueue(key: Path) {
+        
+        heap.append(key)
+        
+        var childIndex: Float = Float(heap.count) - 1
+        var parentIndex: Int! = 0
+        
+        // calculate parent index
+        if (childIndex != 0) {
+            parentIndex = Int(floorf((childIndex - 1) / 2))
+        }
+        
+        var childToUse: Path
+        var parentToUse: Path
+        
+        // use the bottom-up approach
+        while childIndex != 0 {
+            
+            childToUse = heap[Int(childIndex)]
+            parentToUse = heap[parentIndex]
+            
+            // swap child and parent positions
+            if childToUse.total < parentToUse.total {
+                swap(&heap[parentIndex], &heap[Int(childIndex)])
+            }
+            
+            // reset indices
+            childIndex = Float(parentIndex)
+            
+            if (childIndex != 0) {
+                parentIndex = Int(floorf((childIndex - 1) / 2))
+            }
+        }
+    }
+}
+
 class Path {
     var total: Int!
     var destination: Vertex
     var previous: Path!
-    
+
     // object initialization
     init() {
         destination = Vertex()
@@ -41,73 +102,108 @@ public class Edge {
     }
 }
 
-// process Dijkstra's shortest path algorithm
-func processDijkstra(source: Vertex, destination: Vertex) -> Path? {
-    var frontier: Array = Array()
-    var finalPaths: Array = Array()
-    
-    // use source edges to create the frontier
-    for e in source.neighbors {
-        var newPath: Path = Path()
-        
-        newPath.destination = e.neighbor
-        newPath.previous = nil
-        newPath.total = e.weight
-        
-        // add the new path to the frontier
-        frontier.append(newPath)
-    }
-    
-    // obtain the best path
-    var bestPath: Path = Path()
-    while(frontier.count != 0) {
-        // support path changes using the greedy approach
-        bestPath = Path()
-        
-        var x: Int = 0
-        var pathIndex: Int = 0
-        
-        for(x = 0; x < frontier.count; x++) {
-            var itemPath: Path = frontier[x]
-            
-            if (bestPath.total == nil) || (itemPath.total < bestPath.total) {
-                bestPath = itemPath
-                pathIndex = x
-            }
-        }
-        // enumerate the bestPath edges
-        for e in bestPath.destination.neighbors {
-            var newPath: Path = Path()
-            
-            newPath.destination = e.neighbor
-            newPath.previous = bestPath
-            newPath.total = bestPath.total + e.weight
-            
-            // add the new path to the frontier
-            frontier.append(newPath)
-        }
-        
-        // preserve the bestPath
-        finalPaths.append(bestPath)
-        
-        // remove bestPath from the frontier
-        frontier.removeAtIndex(pathIndex)
-    }
-    
-    // establish the shortestPath as an optional
-    var shortestPath: Path! = Path()
-    
-    for itemPath in finalPaths {
-        if (itemPath.destination.key == destination.key) {
-            
-            if(shortestPath.total == nil) || (itemPath.total < shortestPath.total) {
-                shortestPath = itemPath
-            }
-        }
-    }
-    
-    return shortestPath
-}
+
+
+//// shortest paths
+//// maintain objects that make the "frontier"
+//class Path {
+//    var total: Int!
+//    var destination: Vertex
+//    var previous: Path!
+//    
+//    // object initialization
+//    init() {
+//        destination = Vertex()
+//    }
+//}
+//
+//public class Vertex {
+//    var key: String?
+//    var neighbors: Array<Edge>
+//
+//    init() {
+//        self.neighbors = Array<Edge>()
+//    }
+//}
+//
+//// an edge data structure
+//public class Edge {
+//    var neighbor: Vertex
+//    var weight: Int
+//
+//    init() {
+//        weight = 0
+//        self.neighbor = Vertex()
+//    }
+//}
+//
+//// process Dijkstra's shortest path algorithm
+//func processDijkstra(source: Vertex, destination: Vertex) -> Path? {
+//    var frontier: Array?
+//    var finalPaths: Array?
+//    
+//    // use source edges to create the frontier
+//    for e in source.neighbors {
+//        var newPath: Path = Path()
+//        
+//        newPath.destination = e.neighbor
+//        newPath.previous = nil
+//        newPath.total = e.weight
+//        
+//        // add the new path to the frontier
+//        frontier.append(newPath)
+//    }
+//    
+//    // obtain the best path
+//    var bestPath: Path = Path()
+//    while(frontier.count != 0) {
+//        // support path changes using the greedy approach
+//        bestPath = Path()
+//        
+//        var x: Int = 0
+//        var pathIndex: Int = 0
+//        
+//        for(x = 0; x < frontier.count; x++) {
+//            var itemPath: Path = frontier[x]
+//            
+//            if (bestPath.total == nil) || (itemPath.total < bestPath.total) {
+//                bestPath = itemPath
+//                pathIndex = x
+//            }
+//        }
+//        // enumerate the bestPath edges
+//        for e in bestPath.destination.neighbors {
+//            var newPath: Path = Path()
+//            
+//            newPath.destination = e.neighbor
+//            newPath.previous = bestPath
+//            newPath.total = bestPath.total + e.weight
+//            
+//            // add the new path to the frontier
+//            frontier.append(newPath)
+//        }
+//        
+//        // preserve the bestPath
+//        finalPaths.append(bestPath)
+//        
+//        // remove bestPath from the frontier
+//        frontier.removeAtIndex(pathIndex)
+//    }
+//    
+//    // establish the shortestPath as an optional
+//    var shortestPath: Path! = Path()
+//    
+//    for itemPath in finalPaths {
+//        if (itemPath.destination.key == destination.key) {
+//            
+//            if(shortestPath.total == nil) || (itemPath.total < shortestPath.total) {
+//                shortestPath = itemPath
+//            }
+//        }
+//    }
+//    
+//    return shortestPath
+//}
 
 //// a vertex data structure
 //public class Vertex {
