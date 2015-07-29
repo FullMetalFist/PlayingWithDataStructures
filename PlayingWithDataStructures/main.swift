@@ -8,101 +8,260 @@
 
 import Foundation
 
-// heaps
-// obtain the best path
-// a basic min-heap data structure
-public class PathHeap {
+// traversals
+// depth-first in-order traversal
+class AVLTree<T: Comparable> {
     
-    private var heap: Array<Path>
-    
-    // the number of frontier items
-    var count: Int {
-        return self.heap.count
-    }
-    
+    var key: T?
+    var left: AVLTree?
+    var right: AVLTree?
     init() {
-        heap = Array<Path>()
+        
     }
     
-    // obtain the minimum path
-    func peek() -> Path! {
-        if (heap.count > 0) {
-            return heap[0]  // shortest path
+    func processAVLDepthTraversal() {
+        //generic binary search tree
+        
+        // check for a nil condition
+        if (self.key == nil) {
+            println("no key provided")
+            return
         }
-        else {
-            return nil
+        
+        // process the left side
+        if (self.left != nil) {
+            left?.processAVLDepthTraversal()
         }
-    }
+        
+        println("key is \(self.key!) visited...")
+        
+        // process the right side
+        if (self.right != nil) {
+            right?.processAVLDepthTraversal()
+        }
+    } // end function
     
-    // remove the minimum path
-    func enQueue(key: Path) {
+    // breadth-first traversal
+    func traverseGraphBFS(startingV:Vertex) {
         
-        heap.append(key)
+        // establish a new queue
+        var graphQueue: Queue<Vertex> = Queue<Vertex>()
         
-        var childIndex: Float = Float(heap.count) - 1
-        var parentIndex: Int! = 0
+        // queue a starting vertex
+        graphQueue.enQueue(startingV)
         
-        // calculate parent index
-        if (childIndex != 0) {
-            parentIndex = Int(floorf((childIndex - 1) / 2))
-        }
-        
-        var childToUse: Path
-        var parentToUse: Path
-        
-        // use the bottom-up approach
-        while childIndex != 0 {
+        while(!graphQueue.isEmpty()) {
             
-            childToUse = heap[Int(childIndex)]
-            parentToUse = heap[parentIndex]
+            // traverse the next queued vertex
+            var vitem = graphQueue.deQueue() as Vertex!
             
-            // swap child and parent positions
-            if childToUse.total < parentToUse.total {
-                swap(&heap[parentIndex], &heap[Int(childIndex)])
+            // add unvisited vertices to the queue
+            for e in vitem.neighbors {
+                if e.neighbor.visited == false {
+                    println("adding vertex: \(e.neighbor.key!)")
+                    graphQueue.enQueue(e.neighbor)
+                }
             }
             
-            // reset indices
-            childIndex = Float(parentIndex)
-            
-            if (childIndex != 0) {
-                parentIndex = Int(floorf((childIndex - 1) / 2))
-            }
-        }
-    }
-}
-
-class Path {
-    var total: Int!
-    var destination: Vertex
-    var previous: Path!
-
-    // object initialization
-    init() {
-        destination = Vertex()
+            vitem.visited = true
+            println("traversed vertex: \(vitem.key!)..")
+        } // end while
+        
+        println("graph traversal complete")
     }
 }
 
 public class Vertex {
     var key: String?
     var neighbors: Array<Edge>
-
+    var visited: Bool?
+    
     init() {
         self.neighbors = Array<Edge>()
     }
 }
-
-// an edge data structure
 public class Edge {
     var neighbor: Vertex
     var weight: Int
-
+    
     init() {
         weight = 0
         self.neighbor = Vertex()
     }
 }
 
+class QNode<T> {
+    var key: T?
+    var next: QNode?
+}
 
+public class Queue<T> {
+    private var top: QNode<T>! = QNode<T>()
+
+    // enqueue the specified object
+    func enQueue(var key:T) {
+
+        // check for the instance
+        if (top == nil) {
+            top = QNode<T>()
+        }
+
+        // establish the top node
+        if (top.key == nil) {
+            top.key = key;
+            return
+        }
+
+        var childToUse: QNode<T> = QNode<T>()
+        var current: QNode = top
+
+        // cycle through the list of items to get to the end
+        while (current.next != nil) {
+            current = current.next!
+        }
+
+        // append a new item
+        childToUse.key = key
+        current.next = childToUse
+    }
+
+    // retrieve items from the top level in 0(1) constant time
+    func deQueue() -> T? {
+
+        // determine if the key or instance exists
+        let topItem: T? = self.top?.key
+
+        if (topItem == nil) {
+            return nil
+        }
+
+        // retrieve and queue the next item
+        var queueItem: T? = top.key!
+
+        // use optional binding
+        if let nextItem = top.next {
+            top = nextItem
+        }
+        else {
+            top = nil
+        }
+
+        return queueItem
+    }
+
+    // check for the presence of a value
+    func isEmpty() -> Bool {
+
+        // determine if the key or instance exists
+        if let topItem: T = self.top?.key {
+            return false
+        }
+        else {
+            return true
+        }
+    }
+
+    // retrieve the topmost item
+    func peek() -> T? {
+        return top.key!
+    }
+}
+
+
+
+//// heaps
+//// obtain the best path
+//// a basic min-heap data structure
+//public class PathHeap {
+//    
+//    private var heap: Array<Path>
+//    
+//    // the number of frontier items
+//    var count: Int {
+//        return self.heap.count
+//    }
+//    
+//    init() {
+//        heap = Array<Path>()
+//    }
+//    
+//    // obtain the minimum path
+//    func peek() -> Path! {
+//        if (heap.count > 0) {
+//            return heap[0]  // shortest path
+//        }
+//        else {
+//            return nil
+//        }
+//    }
+//    
+//    // remove the minimum path
+//    func enQueue(key: Path) {
+//        
+//        heap.append(key)
+//        
+//        var childIndex: Float = Float(heap.count) - 1
+//        var parentIndex: Int! = 0
+//        
+//        // calculate parent index
+//        if (childIndex != 0) {
+//            parentIndex = Int(floorf((childIndex - 1) / 2))
+//        }
+//        
+//        var childToUse: Path
+//        var parentToUse: Path
+//        
+//        // use the bottom-up approach
+//        while childIndex != 0 {
+//            
+//            childToUse = heap[Int(childIndex)]
+//            parentToUse = heap[parentIndex]
+//            
+//            // swap child and parent positions
+//            if childToUse.total < parentToUse.total {
+//                swap(&heap[parentIndex], &heap[Int(childIndex)])
+//            }
+//            
+//            // reset indices
+//            childIndex = Float(parentIndex)
+//            
+//            if (childIndex != 0) {
+//                parentIndex = Int(floorf((childIndex - 1) / 2))
+//            }
+//        }
+//    }
+//}
+//
+//class Path {
+//    var total: Int!
+//    var destination: Vertex
+//    var previous: Path!
+//
+//    // object initialization
+//    init() {
+//        destination = Vertex()
+//    }
+//}
+//
+//public class Vertex {
+//    var key: String?
+//    var neighbors: Array<Edge>
+//
+//    init() {
+//        self.neighbors = Array<Edge>()
+//    }
+//}
+//
+//// an edge data structure
+//public class Edge {
+//    var neighbor: Vertex
+//    var weight: Int
+//
+//    init() {
+//        weight = 0
+//        self.neighbor = Vertex()
+//    }
+//}
 
 //// shortest paths
 //// maintain objects that make the "frontier"
