@@ -8,166 +8,227 @@
 
 import Foundation
 
-// traversals
-// depth-first in-order traversal
-class AVLTree<T: Comparable> {
-    
-    var key: T?
-    var left: AVLTree?
-    var right: AVLTree?
-    init() {
-        
-    }
-    
-    func processAVLDepthTraversal() {
-        //generic binary search tree
-        
-        // check for a nil condition
-        if (self.key == nil) {
-            println("no key provided")
-            return
-        }
-        
-        // process the left side
-        if (self.left != nil) {
-            left?.processAVLDepthTraversal()
-        }
-        
-        println("key is \(self.key!) visited...")
-        
-        // process the right side
-        if (self.right != nil) {
-            right?.processAVLDepthTraversal()
-        }
-    } // end function
-    
-    // breadth-first traversal
-    func traverseGraphBFS(startingV:Vertex) {
-        
-        // establish a new queue
-        var graphQueue: Queue<Vertex> = Queue<Vertex>()
-        
-        // queue a starting vertex
-        graphQueue.enQueue(startingV)
-        
-        while(!graphQueue.isEmpty()) {
-            
-            // traverse the next queued vertex
-            var vitem = graphQueue.deQueue() as Vertex!
-            
-            // add unvisited vertices to the queue
-            for e in vitem.neighbors {
-                if e.neighbor.visited == false {
-                    println("adding vertex: \(e.neighbor.key!)")
-                    graphQueue.enQueue(e.neighbor)
-                }
-            }
-            
-            vitem.visited = true
-            println("traversed vertex: \(vitem.key!)..")
-        } // end while
-        
-        println("graph traversal complete")
-    }
+// hash tables
+// simple example of a hash table node
+
+class HashNode {
+    var firstName: String!
+    var lastName: String!
+    var next: HashNode!
 }
 
-public class Vertex {
-    var key: String?
-    var neighbors: Array<Edge>
-    var visited: Bool?
+class HashTable {
+    private var buckets: Array<HashNode!>
     
-    init() {
-        self.neighbors = Array<Edge>()
+    // initialize the buckets with nil values
+    init(capacity: Int) {
+        self.buckets = Array<HashNode!>(count: capacity, repeatedValue: nil)
     }
-}
-public class Edge {
-    var neighbor: Vertex
-    var weight: Int
     
-    init() {
-        weight = 0
-        self.neighbor = Vertex()
-    }
-}
-
-class QNode<T> {
-    var key: T?
-    var next: QNode?
-}
-
-public class Queue<T> {
-    private var top: QNode<T>! = QNode<T>()
-
-    // enqueue the specified object
-    func enQueue(var key:T) {
-
-        // check for the instance
-        if (top == nil) {
-            top = QNode<T>()
-        }
-
-        // establish the top node
-        if (top.key == nil) {
-            top.key = key;
-            return
-        }
-
-        var childToUse: QNode<T> = QNode<T>()
-        var current: QNode = top
-
-        // cycle through the list of items to get to the end
-        while (current.next != nil) {
-            current = current.next!
-        }
-
-        // append a new item
-        childToUse.key = key
-        current.next = childToUse
-    }
-
-    // retrieve items from the top level in 0(1) constant time
-    func deQueue() -> T? {
-
-        // determine if the key or instance exists
-        let topItem: T? = self.top?.key
-
-        if (topItem == nil) {
-            return nil
-        }
-
-        // retrieve and queue the next item
-        var queueItem: T? = top.key!
-
-        // use optional binding
-        if let nextItem = top.next {
-            top = nextItem
+    func addWord(firstName: String, lastName: String) {
+        
+        var hashIndex: Int!
+        var fullName: String!
+        
+        // create a hashvalue using the complete name
+        fullName = fullName + lastName
+        hashIndex = self.createHash(fullName)
+        
+        var childToUse: HashNode = HashNode()
+        var head: HashNode!
+        
+        childToUse.firstName = firstName
+        childToUse.lastName = lastName
+        
+        // check for an existing bucket
+        if (buckets[hashIndex] == nil) {
+            buckets[hashIndex] = childToUse
         }
         else {
-            top = nil
-        }
-
-        return queueItem
-    }
-
-    // check for the presence of a value
-    func isEmpty() -> Bool {
-
-        // determine if the key or instance exists
-        if let topItem: T = self.top?.key {
-            return false
-        }
-        else {
-            return true
+            println("a collision occurred. implementing chaining..")
+            head = buckets[hashIndex]
+            
+            // append new item to the head of the list
+            childToUse.next = head
+            head = childToUse
+            
+            // update the chained list
+            buckets[hashIndex] = head
         }
     }
-
-    // retrieve the topmost item
-    func peek() -> T? {
-        return top.key!
+    
+    func createHash(fullName: String) -> Int! {
+        var remainder: Int = 0
+        var divisor: Int = 0
+        
+        // obtain the ascii value of each character
+        for key in fullName.unicodeScalars {
+            divisor += Int(key.value)
+        }
+        
+        remainder = divisor % buckets.count
+        return remainder
     }
 }
 
-
+//// traversals
+//// depth-first in-order traversal
+//class AVLTree<T: Comparable> {
+//    
+//    var key: T?
+//    var left: AVLTree?
+//    var right: AVLTree?
+//    init() {
+//        
+//    }
+//    
+//    func processAVLDepthTraversal() {
+//        //generic binary search tree
+//        
+//        // check for a nil condition
+//        if (self.key == nil) {
+//            println("no key provided")
+//            return
+//        }
+//        
+//        // process the left side
+//        if (self.left != nil) {
+//            left?.processAVLDepthTraversal()
+//        }
+//        
+//        println("key is \(self.key!) visited...")
+//        
+//        // process the right side
+//        if (self.right != nil) {
+//            right?.processAVLDepthTraversal()
+//        }
+//    } // end function
+//    
+//    // breadth-first traversal
+//    func traverseGraphBFS(startingV:Vertex) {
+//        
+//        // establish a new queue
+//        var graphQueue: Queue<Vertex> = Queue<Vertex>()
+//        
+//        // queue a starting vertex
+//        graphQueue.enQueue(startingV)
+//        
+//        while(!graphQueue.isEmpty()) {
+//            
+//            // traverse the next queued vertex
+//            var vitem = graphQueue.deQueue() as Vertex!
+//            
+//            // add unvisited vertices to the queue
+//            for e in vitem.neighbors {
+//                if e.neighbor.visited == false {
+//                    println("adding vertex: \(e.neighbor.key!)")
+//                    graphQueue.enQueue(e.neighbor)
+//                }
+//            }
+//            
+//            vitem.visited = true
+//            println("traversed vertex: \(vitem.key!)..")
+//        } // end while
+//        
+//        println("graph traversal complete")
+//    }
+//}
+//
+//public class Vertex {
+//    var key: String?
+//    var neighbors: Array<Edge>
+//    var visited: Bool?
+//    
+//    init() {
+//        self.neighbors = Array<Edge>()
+//    }
+//}
+//public class Edge {
+//    var neighbor: Vertex
+//    var weight: Int
+//    
+//    init() {
+//        weight = 0
+//        self.neighbor = Vertex()
+//    }
+//}
+//
+//class QNode<T> {
+//    var key: T?
+//    var next: QNode?
+//}
+//
+//public class Queue<T> {
+//    private var top: QNode<T>! = QNode<T>()
+//
+//    // enqueue the specified object
+//    func enQueue(var key:T) {
+//
+//        // check for the instance
+//        if (top == nil) {
+//            top = QNode<T>()
+//        }
+//
+//        // establish the top node
+//        if (top.key == nil) {
+//            top.key = key;
+//            return
+//        }
+//
+//        var childToUse: QNode<T> = QNode<T>()
+//        var current: QNode = top
+//
+//        // cycle through the list of items to get to the end
+//        while (current.next != nil) {
+//            current = current.next!
+//        }
+//
+//        // append a new item
+//        childToUse.key = key
+//        current.next = childToUse
+//    }
+//
+//    // retrieve items from the top level in 0(1) constant time
+//    func deQueue() -> T? {
+//
+//        // determine if the key or instance exists
+//        let topItem: T? = self.top?.key
+//
+//        if (topItem == nil) {
+//            return nil
+//        }
+//
+//        // retrieve and queue the next item
+//        var queueItem: T? = top.key!
+//
+//        // use optional binding
+//        if let nextItem = top.next {
+//            top = nextItem
+//        }
+//        else {
+//            top = nil
+//        }
+//
+//        return queueItem
+//    }
+//
+//    // check for the presence of a value
+//    func isEmpty() -> Bool {
+//
+//        // determine if the key or instance exists
+//        if let topItem: T = self.top?.key {
+//            return false
+//        }
+//        else {
+//            return true
+//        }
+//    }
+//
+//    // retrieve the topmost item
+//    func peek() -> T? {
+//        return top.key!
+//    }
+//}
 
 //// heaps
 //// obtain the best path
