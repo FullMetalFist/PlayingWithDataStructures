@@ -5,6 +5,9 @@
 //  Created by Michael Vilabrera on 5/28/15.
 //  Copyright (c) 2015 Giving Tree. All rights reserved.
 //
+// this is NOT MY CODE
+// from: http://waynewbishop.com/swift
+//
 
 import Foundation
 
